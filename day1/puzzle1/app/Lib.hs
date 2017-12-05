@@ -2,6 +2,7 @@ module Lib where
 
 import Input (input)
 
+-- Puzzle 1
 sumMatchingConsecutives :: [Integer] -> Integer
 sumMatchingConsecutives [] = 0
 sumMatchingConsecutives xs =
@@ -22,5 +23,13 @@ sumMatchingConsecutives xs =
   in
     sumHelper xs
 
-solution :: Integer
-solution = sumMatchingConsecutives input
+solution1 :: Integer
+solution1 = sumMatchingConsecutives input
+
+-- Puzzle 2
+sumHalfwayMatches :: [Integer] -> Integer
+sumHalfwayMatches [] = 0
+sumHalfwayMatches xs = 0
+
+solution2 :: Integer
+solution2 = sumHalfwayMatches input
