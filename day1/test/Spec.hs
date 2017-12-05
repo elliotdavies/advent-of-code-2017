@@ -61,8 +61,8 @@ tests = TestLabel "tests" $ test [
       assertEqual "" expected (sumHalfwayMatches input)
     ,
 
-    "1213141" ~: do
-      let input = [1,2,1,3,1,4,1]
+    "12131415" ~: do
+      let input = [1,2,1,3,1,4,1,5]
       let expected = 4
       assertEqual "" expected (sumHalfwayMatches input)
 
