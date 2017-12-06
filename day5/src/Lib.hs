@@ -1,15 +1,6 @@
 module Lib where
 
 import Input (input)
-import Debug.Trace (trace)
-
--- Should be able to cut this out and save some time
-elemAt :: Int -> [a] -> Maybe a
-elemAt idx xs =
-  safeHead $ filter (\(x,i) -> i == idx) $ zip xs [0..]
-  where
-    safeHead xs =
-      if length xs > 0 then Just (fst $ head xs) else Nothing
 
 countJumps :: (Int -> Int) -> [Int] -> Int
 countJumps incFn js =
@@ -17,20 +8,13 @@ countJumps incFn js =
   where
     step :: Int -> Int -> [Int] -> Int
     step count pos jumps =
-      let
-        jump =
-          elemAt pos jumps
-
-        incrementedJumps =
-          map fst $ map (\(j,i) -> if i == pos then ((incFn j),i) else (j,i)) $ zip jumps [0..]
-
-      in
-        case jump of
-          Nothing ->
-            count
-
-          Just j ->
-            step (count + 1) (pos + j) incrementedJumps
+      if pos < 0 || pos > length jumps - 1
+        then count
+        else
+          let
+            (xs, (jump:ys)) = splitAt pos jumps
+          in
+            step (count + 1) (pos + jump) (xs ++ [incFn jump] ++ ys)
 
 -- Part 1
 solution1 :: Int
