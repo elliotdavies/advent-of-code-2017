@@ -1,11 +1,11 @@
 module Lib where
 
-import qualified Data.Set as Set
-import Data.List.Index (ifoldl, setAt, modifyAt)
+-- import qualified Data.Set as Set
+import Data.List.Index (ifoldl, setAt, modifyAt, ifindIndex)
 
 import Input (input)
 
-redist :: Set.Set [Int] -> [Int] -> Int
+redist :: [[Int]] -> [Int] -> (Int, Int)
 redist history banks =
   let
     (i, blocks) =
@@ -15,9 +15,13 @@ redist history banks =
       dist blocks (i+1) $ setAt i 0 banks
 
   in
-    if Set.member banks' history
-      then Set.size history + 1
-      else redist (Set.insert banks history) banks'
+    case ifindIndex (\i b -> b == banks') history of
+      Just i ->
+        (length history, length history - i + 1)
+
+      Nothing ->
+        redist (history ++ [banks]) banks'
+
   where
     dist 0 _ banks = banks
     dist blocks i banks =
@@ -25,4 +29,8 @@ redist history banks =
 
 solution1 :: Int
 solution1 =
-  redist (Set.singleton input) input
+  fst $ redist [input] input
+
+solution2 :: Int
+solution2 =
+  snd $ redist [input] input
