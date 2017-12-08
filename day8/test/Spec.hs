@@ -1,5 +1,5 @@
 import Test.HUnit
-import Lib (largestValue)
+import Lib (largestValue, largestSeen)
 
 main :: IO ()
 main = do
@@ -14,11 +14,19 @@ input =
 
 tests = TestLabel "tests" $ test [
 
-    TestLabel "findRoot" $ test [
+    TestLabel "largestValue" $ test [
 
       "example" ~: do
         let expected = 1
         assertEqual "" expected (largestValue input)
+
+      ],
+
+    TestLabel "largestSeen" $ test [
+
+      "example" ~: do
+        let expected = 10
+        assertEqual "" expected (largestSeen input)
 
       ]
     ]

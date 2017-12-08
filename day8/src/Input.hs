@@ -1,6 +1,5 @@
 module Input where
 
--- input :: [(String, Int, [String])]
 input =
   [ ("sd", "dec", 441, "k", ("!=", 0)),
     ("lp", "dec", 419, "mxn", (">=", 7)),
