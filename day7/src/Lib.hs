@@ -1,7 +1,6 @@
 module Lib where
 
-import Data.List (sort, sortOn)
-import Debug.Trace (trace)
+import Data.List (sortOn, find)
 
 import Input (input)
 
@@ -29,33 +28,55 @@ solution1 :: String
 solution1 = name $ findRoot input
 
 -- Part 2
+data Result = Weight (Int, Int) | Correction Int deriving (Show)
+
+isCorrection :: Result -> Bool
+isCorrection (Correction i) = True
+isCorrection _ = False
+
 findImbalance :: Node -> [Node] -> Int
 findImbalance node nodes =
-  let
-    weights =
-      zip (map weight $ findBranches (branches node)) (branchWeights (branches node))
-
-  in
-    correction $ sortOn snd weights
+  case findImbalance' node of
+    Correction c -> c
+    Weight w -> 0 -- Won't hit this during the puzzle as tree is always imbalanced
 
   where
-    findBranches :: [String] -> [Node]
-    findBranches names =
-      filter (\n -> name n `elem` names) nodes
+    findImbalance' :: Node -> Result
+    findImbalance' node =
+      let
+        branchResults =
+          map findImbalance' (findBranches node)
 
-    branchWeights :: [String] -> [Int]
-    branchWeights names =
-      map (\n -> weight n + sum (branchWeights $ branches n)) $ findBranches names
+      in
+        case find isCorrection branchResults of
+          Just c -> c
+          Nothing ->
+            balance node $ map (\(Weight (w,bw)) -> (w,w+bw)) branchResults
 
-    correction :: [(Int,Int)] -> Int
-    correction [] = 0
-    correction (_:[]) = 0
-    correction ((w,bw):(w',bw'):ws) =
-      if bw > bw'
-        then w - (bw - bw')
-        else if bw < bw'
-          then w + (bw' - bw)
-          else correction $ reverse ((w',bw'):ws)
+    findBranches :: Node -> [Node]
+    findBranches node =
+      filter (\n -> name n `elem` (branches node)) nodes
+
+-- Try to balance a node that has the given branch weights
+balance :: Node -> [(Int, Int)] -> Result
+balance node [] = Weight (weight node, 0)
+balance node ws =
+  let
+    totals = map snd ws
+
+  in
+    if maximum totals == minimum totals
+      then Weight (weight node, sum totals)
+      else Correction (correctImbalance $ sortOn snd ws)
+
+-- Correct an imbalanced list of weights
+correctImbalance :: [(Int, Int)] -> Int
+correctImbalance ((w,bw):(w',bw'):ws) =
+  if bw > bw'
+    then w - (bw - bw')
+    else if bw < bw'
+      then w + (bw' - bw)
+      else correctImbalance $ reverse ((w',bw'):ws)
 
 solution2 :: Int
 solution2 = findImbalance (findRoot input) input
