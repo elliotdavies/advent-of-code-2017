@@ -7,7 +7,6 @@ import Input (input)
 data Item
   = Group [Item]
   | Garbage Tokens
-  | Nil
   deriving (Show, Eq)
 
 type Tokens = String
