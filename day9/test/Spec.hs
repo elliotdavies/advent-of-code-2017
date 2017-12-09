@@ -8,66 +8,66 @@ main = do
 
 tests = TestLabel "tests" $ test [
 
-    TestLabel "parseStream" $ test [
+    TestLabel "parseItems" $ test [
 
       "{}" ~: do
         let input = "{}"
-        let expected = Group []
-        assertEqual "" expected (parseStream input)
+        let expected = [Group []]
+        assertEqual "" expected (fst $ parseItems input)
       ,
 
       "<<<<>" ~: do
         let input = "<<<<>"
-        let expected = Garbage
-        assertEqual "" expected (parseStream input)
+        let expected = [Garbage]
+        assertEqual "" expected (fst $ parseItems input)
       ,
 
       "<{!>}>" ~: do
         let input = "<{!>}>"
-        let expected = Garbage
-        assertEqual "" expected (parseStream input)
+        let expected = [Garbage]
+        assertEqual "" expected (fst $ parseItems input)
       ,
 
       "<!!!>>" ~: do
         let input = "<!!!>>"
-        let expected = Garbage
-        assertEqual "" expected (parseStream input)
+        let expected = [Garbage]
+        assertEqual "" expected (fst $ parseItems input)
       ,
 
       "<{o\"i!a,<{i<a>" ~: do
         let input = "<{o\"i!a,<{i<a>"
-        let expected = Garbage
-        assertEqual "" expected (parseStream input)
+        let expected = [Garbage]
+        assertEqual "" expected (fst $ parseItems input)
       ,
 
       "{{{}}}" ~: do
         let input = "{{{}}}"
-        let expected = Group [Group [Group []]]
-        assertEqual "" expected (parseStream input)
+        let expected = [Group [Group [Group []]]]
+        assertEqual "" expected (fst $ parseItems input)
       ,
 
       "{{},{}}" ~: do
         let input = "{{},{}}"
-        let expected = Group [Group [], Group []]
-        assertEqual "" expected (parseStream input)
+        let expected = [Group [Group [], Group []]]
+        assertEqual "" expected (fst $ parseItems input)
       ,
 
       "{<{},{},{{}}>}" ~: do
         let input = "{<{},{},{{}}>}"
-        let expected = Group [Garbage]
-        assertEqual "" expected (parseStream input)
+        let expected = [Group [Garbage]]
+        assertEqual "" expected (fst $ parseItems input)
       ,
 
       "{<a>,<a>,<a>,<a>}" ~: do
         let input = "{<a>,<a>,<a>,<a>}"
-        let expected = Group [Garbage, Garbage, Garbage, Garbage]
-        assertEqual "" expected (parseStream input)
+        let expected = [Group [Garbage, Garbage, Garbage, Garbage]]
+        assertEqual "" expected (fst $ parseItems input)
       ,
 
       "{{<!>},{<!>},{<!>},{<a>}}" ~: do
         let input = "{{<!>},{<!>},{<!>},{<a>}}"
-        let expected = Group [Group [Garbage]]
-        assertEqual "" expected (parseStream input)
+        let expected = [Group [Group [Garbage]]]
+        assertEqual "" expected (fst $ parseItems input)
 
       ]
     ]

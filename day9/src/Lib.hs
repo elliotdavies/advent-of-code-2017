@@ -1,25 +1,8 @@
 module Lib where
 
-import Data.List.Split (splitOn)
+import Control.Arrow (first)
 
-import Debug.Trace (trace)
-
--- import Input (input)
-
-
-
-{-
-parseItem :: Tokens -> (Item, Tokens)
-parseItem takes an input string
-  - If starts with <, find > and return (Garbage, leftover tokens)
-  - If starts with {, parseGroup and return (Group items, leftover tokens)
-
-parseGroup :: Tokens -> [Item]
-parseGroup takes an input string; need to parse multiple items
-  - parseItem gives a result and leftover tokens
-  - if leftover token is '}' return list of results
-  - if leftover token is ',' discard and parseItem again
--}
+import Input (input)
 
 data Item
   = Group [Item]
@@ -36,34 +19,33 @@ dropGarbage (t:ts)
   | t == '!' = dropGarbage $ drop 1 ts
   | otherwise = dropGarbage ts
 
-parseItem :: Tokens -> (Item, Tokens)
-parseItem [] = (Nil, [])
-parseItem (t:ts) =
-  case trace ("parseItem: " ++ show t) t of
+parseItems :: Tokens -> ([Item], Tokens)
+parseItems [] = ([],[])
+parseItems (t:ts) =
+  case t of
     '<' ->
-      let ts' = dropGarbage ts
-      in (Garbage, ts')
+      first ((:) Garbage) $ parseItems $ dropGarbage ts
 
     '{' ->
-      let (innerItems, ts') = parseGroupInner ts
-      in (Group innerItems, ts')
+      let
+        (innerItems, ts') = parseItems ts
+        (adjacentItems, ts'') = parseItems ts'
+      in
+        ((Group innerItems):adjacentItems, ts'')
 
-parseGroupInner :: Tokens -> ([Item], Tokens)
-parseGroupInner [] = ([Nil], [])
-parseGroupInner (t:ts) =
-  case t of
+    ',' ->
+      parseItems ts
+
     '}' ->
       ([], ts)
 
-    ',' ->
-      parseGroupInner ts
+parseScore :: Int -> [Item] -> Int
+parseScore n = sum . map (score n)
+  where
+    score :: Int -> Item -> Int
+    score n (Group items) = n + parseScore (n+1) items
+    score _ _ = 0
 
-    _ ->
-      let
-        (item, ts') = parseItem ts
-        (items, ts'') = parseGroupInner ts'
-      in
-        (item:items, ts'')
-
-parseStream :: Tokens -> Item
-parseStream = fst . parseItem
+-- Part 1
+solution1 :: Int
+solution1 = parseScore 1 $ fst $ parseItems input
