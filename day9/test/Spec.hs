@@ -18,25 +18,25 @@ tests = TestLabel "tests" $ test [
 
       "<<<<>" ~: do
         let input = "<<<<>"
-        let expected = [Garbage]
+        let expected = [Garbage "<<<"]
         assertEqual "" expected (fst $ parseItems input)
       ,
 
       "<{!>}>" ~: do
         let input = "<{!>}>"
-        let expected = [Garbage]
+        let expected = [Garbage "{}"]
         assertEqual "" expected (fst $ parseItems input)
       ,
 
       "<!!!>>" ~: do
         let input = "<!!!>>"
-        let expected = [Garbage]
+        let expected = [Garbage ""]
         assertEqual "" expected (fst $ parseItems input)
       ,
 
       "<{o\"i!a,<{i<a>" ~: do
         let input = "<{o\"i!a,<{i<a>"
-        let expected = [Garbage]
+        let expected = [Garbage "{o\"i,<{i<a"]
         assertEqual "" expected (fst $ parseItems input)
       ,
 
@@ -54,19 +54,19 @@ tests = TestLabel "tests" $ test [
 
       "{<{},{},{{}}>}" ~: do
         let input = "{<{},{},{{}}>}"
-        let expected = [Group [Garbage]]
+        let expected = [Group [Garbage "{},{},{{}}"]]
         assertEqual "" expected (fst $ parseItems input)
       ,
 
       "{<a>,<a>,<a>,<a>}" ~: do
         let input = "{<a>,<a>,<a>,<a>}"
-        let expected = [Group [Garbage, Garbage, Garbage, Garbage]]
+        let expected = [Group [Garbage "a", Garbage "a", Garbage "a", Garbage "a"]]
         assertEqual "" expected (fst $ parseItems input)
       ,
 
       "{{<!>},{<!>},{<!>},{<a>}}" ~: do
         let input = "{{<!>},{<!>},{<!>},{<a>}}"
-        let expected = [Group [Group [Garbage]]]
+        let expected = [Group [Group [Garbage "},{<},{<},{<a"]]]
         assertEqual "" expected (fst $ parseItems input)
 
       ]

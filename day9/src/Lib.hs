@@ -6,25 +6,33 @@ import Input (input)
 
 data Item
   = Group [Item]
-  | Garbage
+  | Garbage Tokens
   | Nil
   deriving (Show, Eq)
 
 type Tokens = String
 
-dropGarbage :: Tokens -> Tokens
-dropGarbage [] = []
-dropGarbage (t:ts)
-  | t == '>' = ts
-  | t == '!' = dropGarbage $ drop 1 ts
-  | otherwise = dropGarbage ts
+separateGarbage :: Tokens -> (Tokens, Tokens)
+separateGarbage [] = ([],[])
+separateGarbage (t:ts)
+  | t == '>' = ([],ts)
+  | t == '!' = separateGarbage $ drop 1 ts
+  | otherwise =
+    let (garbage, ts') = separateGarbage ts
+    in (t:garbage, ts')
 
 parseItems :: Tokens -> ([Item], Tokens)
 parseItems [] = ([],[])
 parseItems (t:ts) =
   case t of
     '<' ->
-      first ((:) Garbage) $ parseItems $ dropGarbage ts
+      let
+        (garbage, ts') = separateGarbage ts
+        (items, ts'') = parseItems ts'
+      in
+        ((Garbage garbage):items, ts'')
+
+      -- first ((:) Garbage) $ parseItems $ separateGarbage ts
 
     '{' ->
       let
@@ -39,13 +47,24 @@ parseItems (t:ts) =
     '}' ->
       ([], ts)
 
-parseScore :: Int -> [Item] -> Int
-parseScore n = sum . map (score n)
+-- Part 1
+scoreGroups :: Int -> [Item] -> Int
+scoreGroups n = sum . map (score n)
   where
     score :: Int -> Item -> Int
-    score n (Group items) = n + parseScore (n+1) items
+    score n (Group items) = n + scoreGroups (n+1) items
     score _ _ = 0
 
--- Part 1
 solution1 :: Int
-solution1 = parseScore 1 $ fst $ parseItems input
+solution1 = scoreGroups 1 $ fst $ parseItems input
+
+-- Part 2
+countGarbage :: [Item] -> Int
+countGarbage = sum . map score
+  where
+    score :: Item -> Int
+    score (Group items) = countGarbage items
+    score (Garbage g) = length g
+
+solution2 :: Int
+solution2 = countGarbage $ fst $ parseItems input
