@@ -5,23 +5,13 @@ import Input (input)
 -- Puzzle 1
 sumMatchingConsecutives :: [Integer] -> Integer
 sumMatchingConsecutives [] = 0
-sumMatchingConsecutives xs =
-  let
-    first =
-      head xs
+sumMatchingConsecutives (x:xs) =
+  sumHelper (x:xs)
+  where
+    comp a b = if a == b then a else 0
 
-    sumHelper ys =
-      case ys of
-        (x:[]) ->
-          if first == x then first else 0
-
-        (x:y:zs) ->
-          let
-            rest = sumHelper (y:zs)
-          in
-            if x == y then x + rest else rest
-  in
-    sumHelper xs
+    sumHelper (y:[]) = comp x y
+    sumHelper (y:z:ys') = (comp y z) + sumHelper (z:ys')
 
 solution1 :: Integer
 solution1 = sumMatchingConsecutives input
