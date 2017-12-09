@@ -1,0 +1,3 @@
+module Input where
+
+input = []
