@@ -37,9 +37,7 @@ runHash pos skip xs (l:lens) =
 
 -- Part 1
 solution1 :: Int
-solution1 =
-  let (x:y:xs) = runHash 0 0 [0..255] input
-  in x * y
+solution1 = product . take 2 $ runHash 0 0 [0..255] input
 
 -- Part 2
 knotHash :: [Int] -> String
