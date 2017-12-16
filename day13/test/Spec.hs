@@ -17,6 +17,6 @@ tests = TestLabel "tests" $ test [
       "delay" ~: do
         let input = [(0, 3),(1, 2),(4, 4),(6, 4)]
         let expected = 10
-        assertEqual "" expected (delay $ initialise input)
+        assertEqual "" expected (delay input)
 
     ]
