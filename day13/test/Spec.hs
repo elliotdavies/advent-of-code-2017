@@ -8,9 +8,15 @@ main = do
 
 tests = TestLabel "tests" $ test [
 
-      "1" ~: do
+      "severity" ~: do
         let input = [(0, 3),(1, 2),(4, 4),(6, 4)]
         let expected = 24
-        assertEqual "" expected (severity input)
+        assertEqual "" expected (severity $ initialise input)
+      ,
+
+      "delay" ~: do
+        let input = [(0, 3),(1, 2),(4, 4),(6, 4)]
+        let expected = 10
+        assertEqual "" expected (delay $ initialise input)
 
     ]
