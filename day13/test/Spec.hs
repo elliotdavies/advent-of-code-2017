@@ -11,7 +11,7 @@ tests = TestLabel "tests" $ test [
       "severity" ~: do
         let input = [(0, 3),(1, 2),(4, 4),(6, 4)]
         let expected = 24
-        assertEqual "" expected (severity $ initialise input)
+        assertEqual "" expected (severity input)
       ,
 
       "delay" ~: do
