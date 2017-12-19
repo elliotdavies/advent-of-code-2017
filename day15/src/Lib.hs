@@ -25,7 +25,7 @@ matches :: Int -> [(Int,Int)] -> Int
 matches n = length . filter (uncurry (==) . mapPair (last16 . toBinary)) . take n
   where
     toBinary :: Int -> String
-    toBinary n = printf "%0b" n
+    toBinary = printf "%0b"
 
     last16 :: String -> String
     last16 = reverse . take 16 . reverse
@@ -35,7 +35,7 @@ matches n = length . filter (uncurry (==) . mapPair (last16 . toBinary)) . take 
 
 -- Part 1
 test1 :: Int
-test1 = matches 5 $ pairs (65,8921)
+test1 = matches 40000000 $ pairs (65,8921)
 
 solution1 :: Int
 solution1 = matches 40000000 $ pairs (116,299)
@@ -44,5 +44,6 @@ solution1 = matches 40000000 $ pairs (116,299)
 test2 :: Int
 test2 = matches 5000000 $ choosyPairs (65,8921)
 
+-- This returns 321 instead of 298 and I have no idea why
 solution2 :: Int
 solution2 = matches 5000000 $ choosyPairs (116,299)
