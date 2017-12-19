@@ -60,3 +60,17 @@ run = foldl step
 
 solution1 :: Programs
 solution1 = run initPrograms (parseInput input)
+
+runUntilCycle :: [Move] -> Programs -> [Programs]
+runUntilCycle moves = runHelper []
+  where
+    runHelper :: [Programs] -> Programs -> [Programs]
+    runHelper seen ps =
+      if ps `elem` seen
+        then reverse seen
+        else runHelper (ps:seen) (run ps moves)
+
+solution2 :: Programs
+solution2 =
+  let possibleMoves = runUntilCycle (parseInput input) initPrograms
+  in possibleMoves !! (1000000000 `mod` length possibleMoves)
