@@ -1,5 +1,5 @@
-import Test.HUnit
-import Lib
+import           Lib
+import           Test.HUnit
 
 main :: IO ()
 main = do
