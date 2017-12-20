@@ -15,8 +15,12 @@ runUntil n spin =
 
       in if val == n then buffer' else step (val + 1) buffer'
 
-
 solution1 :: Int
 solution1 =
   let (Buffer pos buff) = runUntil 2017 337
   in buff !! (pos + 1 `mod` length buff)
+
+solution2 :: Int
+solution2 =
+  let (Buffer _ buff) = runUntil 2017 337
+  in head buff
